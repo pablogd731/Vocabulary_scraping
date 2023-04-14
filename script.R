@@ -54,6 +54,7 @@ for(i in api){
   data <- fromJSON(i)
   store_df[[i]] <- data
   Sys.sleep(3)
+  print(str_c("waiting for ", i))
 }
 return(store_df)
 }
@@ -62,7 +63,30 @@ return(store_df)
 db <- scraping(links)
 names(db) <- t(vocabulary)
 
+#phonetic function
+phonetic_fn <- function(database){
+store_ph <- list()
+for(m in 1:length(database)){
+ ph <- database[[m]]$phonetic
+ if(typeof(ph)=="character"){
+   store_ph[[m]]<-ph
+ }
+ else if(typeof(ph)=="list"){
+   #ph <- database[[m]]$phonetics[[1]]$text
+   ph <- "Not found"
+   store_ph[[m]]<-ph
+ }
+ 
+}
+return(store_ph)
+}
 
+#Call phonetic function
+phonetics <- phonetic_fn(db)
+names(phonetics) <- t(vocabulary)
+
+#Table
+table_doc <- matrix(c(t(vocabulary), phonetics), ncol=2)
 
 
 # #extraer contenido
