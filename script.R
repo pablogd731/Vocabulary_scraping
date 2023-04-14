@@ -85,8 +85,22 @@ return(store_ph)
 phonetics <- phonetic_fn(db)
 names(phonetics) <- t(vocabulary)
 
+#meaning function
+meaning  <- function(database){
+store_mg <- list()
+for(n in 1:length(database)){
+  mg <- database[[n]]$meanings[[1]]$definitions[[1]]$definition
+  store_mg[[n]] <- mg
+}
+  return(store_mg)
+}
+
+#call meaning function
+definitions <- meaning(db)
+
+
 #Table
-table_doc <- matrix(c(t(vocabulary), phonetics), ncol=2)
+table_doc <- matrix(c(t(vocabulary), phonetics, definitions), ncol=3)
 
 
 # #extraer contenido
