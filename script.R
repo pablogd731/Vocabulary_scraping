@@ -22,6 +22,7 @@ direction
 
 #use a personal vocabulary learned
 vocabulary <- as.vector(import("words", "txt", header = F))
+#vocabulary <- as.data.frame(sort(t(vocabulary)))
 
 #concat each word with direction api
 together <- function(file, web_api){
@@ -53,7 +54,7 @@ store_df <- list()
 for(i in api){
   data <- fromJSON(i)
   store_df[[i]] <- data
-  Sys.sleep(3)
+  Sys.sleep(0)
   print(str_c("waiting for ", i))
 }
 return(store_df)
@@ -100,12 +101,12 @@ definitions <- meaning(db)
 
 #Audio links functions 
 audio_links <- function(database){
-al <- list() 
-for (o in 1:length(database)){
-  link <- database[[o]]$phonetics[[1]]$audio
-  al[[o]]<- link
-}
-return(al) 
+  al <- list() 
+  for (o in 1:length(database)){
+    link <- database[[o]]$phonetics[[1]]$audio
+    al[[o]]<- link
+  }
+  return(al) 
 }
 
 #Call audio links functions
@@ -113,19 +114,33 @@ links_audios <- audio_links(db)
 names(links_audios) <- t(vocabulary)
 
 #Descargar audio
+# for(p in links_audios){
+#   if(typeof(p)=="character" && nchar(p)>0 ){
+#     print(length(p))    
+#     patron <- ".*/(.*)\\.mp3$" 
+#     name <- str_c(folder,sub(patron, "\\1", p),".mp3")
+#     download.file(p, name)
+#     
+#     #print(str_c("waiting for ", sub(patron,"\\1",p))
+#   }
+#   Sys.sleep(4)
+# }
+
 for(p in links_audios){
-  if(typeof(p)=="character" && nchar(p0 > 0)){
+  if(typeof(p)=="character" ){
     print(length(p))
-  
     folder <- "/home/pablogd731/Music/Audios/"
     patron <- ".*/(.*)\\.mp3$" 
     name <- str_c(folder,sub(patron, "\\1", p),".mp3")
-    download.file(p, name)
-    print(str_c("waiting for ", sub(patron, "\\1", p))
+    tryCatch(download.file(p, name), 
+             error = function(e) {
+               message(paste("Error al descargar", p))
+               return()
+             })
   }
-  
   Sys.sleep(1)
 }
+
 
 
 #Table
