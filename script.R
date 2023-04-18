@@ -141,10 +141,9 @@ for(p in links_audios){
   Sys.sleep(1)
 }
 
-
-
 #Table
 table_doc <- matrix(c(t(vocabulary), phonetics, definitions), ncol=3)
+table_doc <- table_doc[order(table_doc[,1]),]
 
 
 # #extraer contenido
