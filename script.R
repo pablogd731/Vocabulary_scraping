@@ -11,14 +11,8 @@ library(rio)
 #main directory
 setwd("/home/pablogd731/Documents/Vocabulary_scraping")
 
-
 #Structure of API
 web <- "https://api.dictionaryapi.dev/api/v2/entries/en/"
-word_exemple <- "drawback"
-
-#easy example
-direction <- str_c(web, word_exemple)
-direction
 
 #use a personal vocabulary learned
 vocabulary <- as.vector(import("words", "txt", header = F))
@@ -42,7 +36,6 @@ return(bill)
 #   names(links) <- file
 #   return(links)
 # }
-
 
 #Call function together 
 links <- together(vocabulary, web)
@@ -99,6 +92,24 @@ for(n in 1:length(database)){
 #call meaning function
 definitions <- meaning(db)
 
+#Synonyms Functions
+synonyms_fn <- function(database){
+  store_sy <-list()
+  for (x in 1:length(database)){
+    sy <- unlist(database[[x]]$meanings[[1]]$synonyms)
+    if(is.null(sy)){
+      sy <- "φ"
+    }
+    
+    store_sy[[x]] <- sy
+  }
+  return(store_sy)
+}
+
+#call synonym function
+synonyms <- synonyms_fn(db)
+names(synonyms) <- t(vocabulary)
+
 #Audio links functions 
 audio_links <- function(database){
   al <- list() 
@@ -141,9 +152,11 @@ for(p in links_audios){
   Sys.sleep(1)
 }
 
+
 #Table
 table_doc <- matrix(c(t(vocabulary), phonetics, definitions), ncol=3)
-table_doc <- table_doc[order(table_doc[,1]),]
+
+
 
 
 # #extraer contenido
