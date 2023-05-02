@@ -8,8 +8,12 @@ library(stringr)
 library(jsonlite)
 library(rio)
 
+#Request localitation
+dir <- readline("where would you like to storage your vocabulary?: ")
+
 #main directory
-setwd("/home/pablogd731/Documents/Vocabulary_scraping")
+#setwd("/home/pablogd731/Documents/Vocabulary_scraping")
+setwd(dir)
 
 #Structure of API
 web <- "https://api.dictionaryapi.dev/api/v2/entries/en/"
@@ -140,7 +144,7 @@ names(links_audios) <- t(vocabulary)
 for(p in links_audios){
   if(typeof(p)=="character" ){
     print(length(p))
-    folder <- "/home/pablogd731/Music/Audios/"
+    folder <- str_c(dir,"/")
     patron <- ".*/(.*)\\.mp3$" 
     name <- str_c(folder,sub(patron, "\\1", p),".mp3")
     tryCatch(download.file(p, name), 
