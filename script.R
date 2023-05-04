@@ -7,6 +7,8 @@
 library(stringr)
 library(jsonlite)
 library(rio)
+library(curl)
+library(httr)
 
 #Request localitation
 dir <- readline("where would you like to storage your vocabulary?: ")
@@ -19,8 +21,11 @@ setwd(dir)
 web <- "https://api.dictionaryapi.dev/api/v2/entries/en/"
 
 #use a personal vocabulary learned
-vocabulary <- as.vector(import("words", "txt", header = F))
+vocabulary <-import("words", "txt", header = F)
+
 #vocabulary <- as.data.frame(sort(t(vocabulary)))
+vocabulary <- as.data.frame(sort(t(vocabulary)))
+names(vocabulary) <- "Word"
 
 #concat each word with direction api
 together <- function(file, web_api){
@@ -47,15 +52,21 @@ names(links) <- t(vocabulary)
 
 #Function of scraping
 scraping <- function(api){
-store_df <- list()
-for(i in api){
-  data <- fromJSON(i)
-  store_df[[i]] <- data
-  Sys.sleep(0)
-  print(str_c("waiting for ", i))
+  store_df <- list()
+  for(current_api in api){
+    store_df[[current_api]] <- list(NULL) # Inicializar una entrada vacía en store_df
+    tryCatch({
+      data <- fromJSON(current_api)
+      store_df[[current_api]] <- data # Actualizar la entrada si la API se procesa correctamente
+      Sys.sleep(0)
+      print(str_c("waiting for ", current_api))
+    }, error = function(e) {
+      message(str_c("Error processing ", current_api, ": ", conditionMessage(e)))
+    })
+  }
+  return(store_df)
 }
-return(store_df)
-}
+
 
 #Calling to scrape function
 db <- scraping(links)
@@ -169,6 +180,7 @@ table_doc <- matrix(c(t(vocabulary), phonetics, definitions), ncol=3)
 # 
 # #
 # hello <- phonetics[[1]]["text"]
+
 
 
 
