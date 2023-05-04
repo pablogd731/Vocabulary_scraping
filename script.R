@@ -11,7 +11,7 @@ library(curl)
 library(httr)
 
 #Request localitation
-dir <- readline("where would you like to storage your vocabulary?: ")
+dir <- readline("Where would you like to storage your vocabulary?: ")
 
 #main directory
 #setwd("/home/pablogd731/Documents/Vocabulary_scraping")
@@ -130,6 +130,9 @@ audio_links <- function(database){
   al <- list() 
   for (o in 1:length(database)){
     link <- database[[o]]$phonetics[[1]]$audio
+    if(is.null(link)){
+      link <- "φ"
+    }
     al[[o]]<- link
   }
   return(al) 
